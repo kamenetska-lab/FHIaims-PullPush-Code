@@ -1,0 +1,36 @@
+Instructions for Running Pulling Out/Pushing In Junctions with FHI-aims Bash Script
+
+1. Generate an initial electrode-molecule-electrode structure and relax it in FHI-aims normally. 
+2. After it is fully relaxed, convert the atom coordinates to and XYZ file as normally done and open it up in Chemcraft
+3. Select one of the central Au atoms towards the rear of each electrode (one of the Au atoms that are frozen and not allowed to move during the relaxation step)
+4. With only those two Au atoms selected, go to the dropdown Edit menu and under the "Translate Atomic Coordinates", click on "Align two selected atoms along the Z axis".
+5. Now save the structure as XYZ file named geometry.xyz
+6. Next open geometry.xyz and make sure the atoms belonging to the molecule are first, the atoms belonging to the electrode with the Au atom that is at the origin (0.0,0.0,0.0) are next and then last is the other electrode.
+7. Also make sure the Au atoms that are allowed to move during the relaxation calculation are the first atoms corresponding to each electrode (for example if the molecule has 6 atoms and its bound to two 18 Au electrodes, the molecule atoms will be lines 1-6, the Au electrode that has one atom at the origin will be lines 7-24 with the four apex atoms in lines 7,8,9,10 and the final electrode will be lines 25-42 with the four apex atoms in lines 25,26,27,28)
+8. Save the geometry.xyz file and then run the xyz2aims.py script on your local computer to generate the geometry.in file
+9. Manually add in the lines of "  constrain_relaxation .true." below the Au atoms that are frozen during the relaxation calculation and save the file. 
+9. Go to the folder you are planning on doing the calculations in on the SCC and put in the files
+	- run.sh (Updated version that includes iterative steps)
+	- control.in (Important: makes sure you comment out (#) the restart "aims.restart" line
+	- batch_script.py
+	- geometry.in
+10. Open up the batch_script.py file and change these variables according to your system:
+	- "nmolecule" is the number of atoms in your molecule
+	- "nelectrodeL" is the number of atoms in your first electrode
+	- "nLrelax" is the number of atoms in the first electrode that are not frozen during the calculation
+	- "nelectrodeR" is the number of atoms in your second electrode 
+	- "nRrelax" is the number of atoms in the second electrode that are not frozen during the calculation
+	- "InorOut" can either be "In" or "Out". If you are pulling the junction out then its "Out" and pushing in its "In". It will exit the calculation if you put in any other words
+	
+	*Currently it moves each electrode out 0.05 angstroms. If you want to change the step size you can change the variable "stepsize", but I would not change "stepsize" to any value larger than 0.1
+11. Save the batch_script.py file 
+12. Open up run.sh file and make sure the ACTIVE path is directing to the current folder.
+13. Depending on how many steps you want to take, scroll to the bottom and where it says "for ((n=1; n<=15; n++))". If you want to do 20 steps change it to "for ((n=1; n<=20; n++))". If you did 5 steps previously, and want to continue running an additional 20 then change it to "for ((n=6; n<=25; n++))".
+14. Save the run.sh file and type qsub run.sh into the command line.
+
+Output:
+- After it completes its first calculation it will rename the "aims.dft.out" and "geometry.in" file to "aims1.dft.out" and "geometry1.in". It will also generate a "geometry1.xyz" file which is the xyz file to view in Chemcraft that corresponds to the relaxed structure at the end of the aims.dft.out file (It is not the same as geometry1.in but it will be the same as geometry2.in)
+- It will run iteratively, numbering "geometry.in", "aims.dft.out", and "geometry.xyz" with the number corresponding to each step.
+
+
+  vdw_correction_hirshfeld
