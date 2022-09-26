@@ -37,6 +37,10 @@ cp aims$n.dft.out step$n
 cp geometryinitial$n.in step$n
 
 rm geometry.in
+
+cp geometry.in.next_step geometry.in
+cp geometry.in step$n
+rm geometry.in
 cp control.in controltemp.in
 rm control.in
 
