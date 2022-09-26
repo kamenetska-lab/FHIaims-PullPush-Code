@@ -53,7 +53,7 @@ rm aims.dft.out
 cp aimstemp.dft.out aims.dft.out
 rm geometry.in
 
-python batch_scriptv2.py
+python batch_script.py
 
 cp geometry.xyz geometryrelaxed$n.xyz
 cp geometryrelaxed$n.xyz step$n
