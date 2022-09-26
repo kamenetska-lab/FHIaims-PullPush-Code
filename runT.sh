@@ -2,7 +2,7 @@
 
 #$ -P kamenet
 
-# #$ -pe omp 16
+## #$ -pe omp 16
 
 #$ -l h_rt=12:00:00
 
